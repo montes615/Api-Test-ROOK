@@ -17,15 +17,16 @@ class AuthRouter(APIRouter):
         self.add_api_route('/register', self.register, methods=['POST'], response_model=TokenResponse)
 
 
-    async def register(self, registerUser: RegisterUser):
+    async def register(self, registerUser: RegisterUser) -> TokenResponse:
         '''Endpoint to register users'''
         self.__controller.register_user(registerUser=registerUser)
         return self.__controller.create_access_token(TokenData(**registerUser.model_dump()))
 
 
-    async def login(self):
-        
-        return JSONResponse(content={'message': 'Hello World'}, status_code=200)
+    async def login(self, loginUser: LoginUser) -> TokenResponse:
+        '''Valid if the user are register'''
+        user = self.__controller.valid_user(loginUser=loginUser)
+        return self.__controller.create_access_token(TokenData(**user.model_dump()))
 
 
 authRouter = AuthRouter()

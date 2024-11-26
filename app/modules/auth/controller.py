@@ -2,9 +2,10 @@ import jwt
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 import os
-from fastapi import HTTPException
 from .model import AuthModel
-from .schemas import RegisterUser, TokenData, TokenResponse
+from .schemas import RegisterUser, TokenData, TokenResponse, LoginUser
+from app.db.schemas import User
+from fastapi import HTTPException
 
 SUPER_SECRET_KEY = os.getenv('SUPER_SECRET_KEY')
 ALGORITHM = os.getenv('ALGORITHM')
@@ -34,18 +35,18 @@ class AuthController():
         to_encode = data.model_dump()
         to_encode['exp'] = datetime.now() + expires_delta
         return TokenResponse(access_token=jwt.encode(to_encode, SUPER_SECRET_KEY, algorithm=ALGORITHM), usage=data.usage)
-    
-    
-    def decode_access_token(self, token: str) -> dict:
-        '''Decode and validate the token'''
-        try:
-            return jwt.decode(token, SUPER_SECRET_KEY, algorithms=[ALGORITHM])
-        except jwt.ExpiredSignatureError:
-            raise HTTPException(401, 'Token expired')
-        except jwt.InvalidTokenError:
-            raise HTTPException(401, 'Unauthorized, invalid token')
         
         
     def register_user(self, registerUser: RegisterUser) -> str:
+        '''Hash an user password and save the user in the DB'''
         hashed_password = self.hash_password(password=registerUser.password)
         self.__model.add_user(username=registerUser.username, hashed_password=hashed_password)
+
+
+    def valid_user(self, loginUser: LoginUser) -> User:
+        '''Valid if the user exists and verify his password'''
+        user = self.__model.get_user(username=loginUser.username)
+        if not user or not self.verify_password(plain_password=loginUser.password, hashed_password=user.hashed_password):
+            raise HTTPException(401, 'Wrong username or password')
+        
+        return user
