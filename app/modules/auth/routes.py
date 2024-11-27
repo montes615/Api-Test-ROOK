@@ -18,8 +18,8 @@ class AuthRouter(APIRouter):
 
     async def register(self, registerUser: RegisterUser) -> TokenResponse:
         '''Endpoint to register users'''
-        self.__controller.register_user(registerUser=registerUser)
-        return self.__controller.create_access_token(TokenData(**registerUser.model_dump()))
+        user = self.__controller.register_user(registerUser=registerUser)
+        return self.__controller.create_access_token(TokenData(**user.model_dump()))
 
 
     async def login(self, loginUser: LoginUser) -> TokenResponse:

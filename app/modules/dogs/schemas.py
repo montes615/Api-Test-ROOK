@@ -9,16 +9,16 @@ class BreedResponse(BaseModel):
     
     
 class BreedCache(BaseModel):
-    image: str
-    expire: datetime
-    request_url: str
-    status_code: int
+    image: str = Field(description='Image of the CEO')
+    expire: datetime = Field(description='Expire time')
+    request_url: str = Field(description='Url request')
+    status_code: int = Field(description='Status code of the request')
     
     
 class BreedStatsResponse(BaseModel):
-    breed: str
-    request_count: int
+    breed: str = Field(description='CEO breed name')
+    request_count: int = Field(description='Number of requests')
     
     
 class StatsResponse(BaseModel):
-    top_breeds: List[BreedStatsResponse]
+    top_breeds: List[BreedStatsResponse] = Field(description='List with the 10 most searched breeds')

@@ -43,6 +43,9 @@ class DogsController():
             cache_use=cache_use,
             request_status=request_status
         )
+
+        if request_status == 404:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=result['message'])
         
         return BreedResponse(breed_name=breed_name, image=result['message'] if not cache_use else cache[breed_name].image)
     
