@@ -12,7 +12,7 @@ class BreedCache(BaseModel):
     image: str
     expire: datetime
     request_url: str
-    status: str
+    status_code: int
     
     
 class BreedStatsResponse(BaseModel):

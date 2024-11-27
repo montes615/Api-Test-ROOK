@@ -19,4 +19,5 @@ class TokenResponse(BaseModel):
 
 class TokenData(BaseModel):
     username: str = Field(description='Username')
+    id: int = Field(description='User identifier')
     usage: Literal['dogs_breed_api'] = Field(description='User api type')

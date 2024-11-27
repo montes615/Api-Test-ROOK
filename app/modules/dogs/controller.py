@@ -14,8 +14,10 @@ class DogsController():
         self.__model = DogsModel()
         
         
-    def get_ceo_breed(self, breed_name: str) -> BreedResponse:
-        cache_use = False
+    def get_ceo_breed(self, breed_name: str, user_id: int) -> BreedResponse:
+        cache_use: bool = False
+        request_status: int = None
+
         if breed_name in cache and cache[breed_name].expire >= datetime.now():
             cache_use = True
             cache[breed_name].expire = datetime.now() + timedelta(minutes=5)
@@ -24,24 +26,37 @@ class DogsController():
             request_url = f'https://dog.ceo/api/breed/{breed_name}/images/random'
             response = httpx.get(request_url)
             result: dict = response.json()
-            
+            request_status = response.status_code if 'status' in result else 503
         
-        self.__model.set_breed_stats(breed_name=breed_name)
-        self.__model.set_breed_requets(
-            breed_name=breed_name, 
-            detail=result['message'] if not cache_use else cache[breed_name].image,
-            request_url=request_url if not cache_use else cache[breed_name].request_url,
-            cache=cache_use,
-            request_status=result['status'] if not cache_use else cache[breed_name].status
-        )
-        
-        if not cache_use and response.status_code != 200:
-            raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail='Third party api failed')
+        if request_status == 503:
+            self.__set_breed_info(breed_name=breed_name, user_id=user_id, details='The api service are unavailable, try some later', request_url=request_url, cache_use=cache_use, request_status=response.status_code)
+            raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail='The api service are unavailable, try some later')
 
         if not cache_use:
-            cache[breed_name] = BreedCache(image=result['message'], expire=datetime.now() + timedelta(minutes=5), request_url=request_url, status=result['status'])
+            cache[breed_name] = BreedCache(image=result['message'], expire=datetime.now() + timedelta(minutes=5), request_url=request_url, status_code=result['status'])
+
+        self.__set_breed_info(
+            breed_name=breed_name, 
+            user_id=user_id,
+            details=result['message'] if not cache_use else cache[breed_name].image,
+            request_url=request_url if not cache_use else cache[breed_name].request_url,
+            cache_use=cache_use,
+            request_status=request_status
+        )
         
         return BreedResponse(breed_name=breed_name, image=result['message'] if not cache_use else cache[breed_name].image)
+    
+
+    def __set_breed_info(self, breed_name: str, user_id: str, details: str, request_url: str, cache_use: bool, request_status: int) -> None:
+        self.__model.set_breed_stats(breed_name=breed_name)
+        self.__model.set_breed_requets(
+            breed_name=breed_name,
+            user_id=user_id,
+            detail=details,
+            request_url=request_url,
+            cache=cache_use,
+            request_status=request_status
+        )
     
     
     def get_stats(self) -> StatsResponse:

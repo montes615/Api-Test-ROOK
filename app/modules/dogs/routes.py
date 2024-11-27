@@ -19,11 +19,11 @@ class DogsRouter(APIRouter):
         
         
     async def breed(self, breed_name: str, credentials: HTTPAuthorizationCredentials = Depends(bearer_auth)) -> BreedResponse:
-        decode_access_token(credentials=credentials)
-        return self.__controller.get_ceo_breed(breed_name=breed_name)
+        token_info = decode_access_token(credentials=credentials)
+        return self.__controller.get_ceo_breed(breed_name=breed_name, user_id=token_info['id'])
     
     async def stats(self, credentials: HTTPAuthorizationCredentials = Depends(bearer_auth)) -> StatsResponse:
-        decode_access_token(credentials=credentials)
+        token_info = decode_access_token(credentials=credentials)
         return self.__controller.get_stats()
 
 

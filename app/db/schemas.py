@@ -1,6 +1,6 @@
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime
-from typing import Literal
+from typing import Optional
 
 class User(SQLModel, table=True):
     __tablename__ = 'users'
@@ -11,6 +11,8 @@ class User(SQLModel, table=True):
     usage: str
     created_at: datetime = Field(default_factory=datetime.now)
     last_update: datetime = Field(default_factory=datetime.now, sa_column_kwargs={'onupdate': datetime.now})
+
+    breed_requests: list["BreedRequests"] = Relationship(back_populates="user")
     
     
 class BreedStats(SQLModel, table=True):
@@ -27,10 +29,13 @@ class BreedRequests(SQLModel, table=True):
     __tablename__ = 'breed_requests'
     
     id: int = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="users.id")
     breed_name: str
-    detail: str = Field(nullable=True)
-    request_url: str = Field(nullable=True)
+    detail: str
+    request_url: str
     cache: bool
-    request_status: str = Field(nullable=True)
+    request_status: int
     created_at: datetime = Field(default_factory=datetime.now)
     last_update: datetime = Field(default_factory=datetime.now, sa_column_kwargs={'onupdate': datetime.now})
+
+    user: Optional[User] = Relationship(back_populates="breed_requests")

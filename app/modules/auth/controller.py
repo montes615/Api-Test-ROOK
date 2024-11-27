@@ -38,10 +38,10 @@ class AuthController():
         return TokenResponse(access_token=token, usage=data.usage)
         
         
-    def register_user(self, registerUser: RegisterUser) -> str:
+    def register_user(self, registerUser: RegisterUser) -> User:
         '''Hash an user password and save the user in the DB'''
         hashed_password = self.hash_password(password=registerUser.password)
-        self.__model.add_user(username=registerUser.username, hashed_password=hashed_password, usage=registerUser.usage)
+        return self.__model.add_user(username=registerUser.username, hashed_password=hashed_password, usage=registerUser.usage)
 
 
     def valid_user(self, loginUser: LoginUser) -> User:

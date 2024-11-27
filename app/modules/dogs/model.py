@@ -26,9 +26,9 @@ class DogsModel():
                 session.commit()
                 
                 
-    def set_breed_requets(self, breed_name: str, detail: str, request_url: str, cache: bool, request_status: str) -> None:
+    def set_breed_requets(self, breed_name: str, user_id: int, detail: str, request_url: str, cache: bool, request_status: int) -> None:
         with Session(engine) as session:
-            breed_request = BreedRequests(breed_name=breed_name, detail=detail, request_url=request_url, cache=cache, request_status=request_status)
+            breed_request = BreedRequests(breed_name=breed_name, user_id=user_id, detail=detail, request_url=request_url, cache=cache, request_status=request_status)
             session.add(breed_request)
             session.commit()
             
