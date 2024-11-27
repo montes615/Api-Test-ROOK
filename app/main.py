@@ -7,6 +7,7 @@ load_dotenv()
 
 app = FastAPI(root_path='/api/v1')
 
+
 app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(Exception, global_exception_handler)
 app.add_middleware(ServerRequestLog)

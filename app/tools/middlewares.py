@@ -3,13 +3,19 @@ from fastapi import Request, Response
 from datetime import datetime
 from app.logs import server_request_log
 from typing import Tuple
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
 
 
 class ServerRequestLog(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        limit = limiter.limit('10/minute')
         start_time = datetime.now()
-
         method, url, client_host = await self.__set_init_log(start_time=start_time, request=request)
+
+        response = await limit(request)
 
         response = await call_next(request)
 
