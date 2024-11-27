@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
-from datetime import datetime, timedelta
+from datetime import datetime
+from typing import List
+
 
 class BreedResponse(BaseModel):
     breed_name: str = Field(description='CEO breed name')
@@ -11,3 +13,12 @@ class BreedCache(BaseModel):
     expire: datetime
     request_url: str
     status: str
+    
+    
+class BreedStatsResponse(BaseModel):
+    breed: str
+    request_count: int
+    
+    
+class StatsResponse(BaseModel):
+    top_breeds: List[BreedStatsResponse]

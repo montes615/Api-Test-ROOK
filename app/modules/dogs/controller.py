@@ -1,6 +1,6 @@
 from .model import DogsModel
 import httpx
-from .schemas import BreedResponse, BreedCache
+from .schemas import BreedResponse, BreedCache, StatsResponse
 from fastapi import HTTPException, status
 from .cache import cache
 from datetime import datetime, timedelta
@@ -42,3 +42,8 @@ class DogsController():
             cache[breed_name] = BreedCache(image=result['message'], expire=datetime.now() + timedelta(minutes=5), request_url=request_url, status=result['status'])
         
         return BreedResponse(breed_name=breed_name, image=result['message'] if not cache_use else cache[breed_name].image)
+    
+    
+    def get_stats(self) -> StatsResponse:
+        breeds_stats_response = self.__model.get_breed_stats()
+        return StatsResponse(top_breeds=breeds_stats_response)

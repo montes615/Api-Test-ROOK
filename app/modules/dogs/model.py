@@ -1,6 +1,8 @@
 from app.db import engine
-from sqlmodel import Session, select
+from sqlmodel import Session, select, desc
 from app.db.schemas import BreedStats, BreedRequests
+from .schemas import BreedStatsResponse
+from typing import List
 
 
 class DogsModel():
@@ -29,3 +31,11 @@ class DogsModel():
             breed_request = BreedRequests(breed_name=breed_name, detail=detail, request_url=request_url, cache=cache, request_status=request_status)
             session.add(breed_request)
             session.commit()
+            
+            
+    def get_breed_stats(self) -> List[BreedStatsResponse]:
+        with Session(engine) as session:
+            statement = select(BreedStats).order_by(desc(BreedStats.requests)).limit(10)
+            breeds_stats = session.exec(statement).all()
+            
+            return [BreedStatsResponse(breed=breed_stats.breed_name, request_count=breed_stats.requests) for breed_stats in breeds_stats]
