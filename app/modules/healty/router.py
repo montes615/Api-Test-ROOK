@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from .controller import HealtyController
 from .schemas import HealtyResponse
-from app.tools.auth import bearer_auth, HTTPAuthorizationCredentials, decode_access_token
+from app.tools import bearer_auth, HTTPAuthorizationCredentials, decode_access_token
 
 
 class HealtyRouter(APIRouter):

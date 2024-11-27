@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from .controller import DogsController
-from app.tools.auth import bearer_auth, decode_access_token, HTTPAuthorizationCredentials
+from app.tools import bearer_auth, decode_access_token, HTTPAuthorizationCredentials
 from .schemas import BreedResponse, StatsResponse
 
 
