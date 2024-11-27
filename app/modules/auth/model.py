@@ -9,10 +9,10 @@ class AuthModel():
         pass
     
     
-    def add_user(self, username: str, hashed_password: str) -> None:
+    def add_user(self, username: str, hashed_password: str, usage: str) -> None:
         '''Add the user on the DB'''
         with Session(engine) as session:
-            user = User(username=username, hashed_password=hashed_password)
+            user = User(username=username, hashed_password=hashed_password, usage=usage)
             session.add(user)
             session.commit()
 
