@@ -19,7 +19,7 @@ class DogsController():
         request_status: int = None
 
         if breed_name in cache and cache[breed_name].expire >= datetime.now():
-            cache_use = True
+            cache_use, request_status = True, cache[breed_name].status_code
             cache[breed_name].expire = datetime.now() + timedelta(minutes=5)
         
         if not cache_use:
@@ -33,21 +33,21 @@ class DogsController():
             raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail='The api service are unavailable, try some later')
 
         if not cache_use:
-            cache[breed_name] = BreedCache(image=result['message'], expire=datetime.now() + timedelta(minutes=5), request_url=request_url, status_code=result['status'])
+            cache[breed_name] = BreedCache(detail=result['message'], expire=datetime.now() + timedelta(minutes=5), request_url=request_url, status_code=request_status)
 
         self.__set_breed_info(
             breed_name=breed_name, 
             user_id=user_id,
-            details=result['message'] if not cache_use else cache[breed_name].image,
+            details=result['message'] if not cache_use else cache[breed_name].detail,
             request_url=request_url if not cache_use else cache[breed_name].request_url,
             cache_use=cache_use,
             request_status=request_status
         )
 
         if request_status == 404:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=result['message'])
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=result['message'] if not cache_use else cache[breed_name].detail)
         
-        return BreedResponse(breed_name=breed_name, image=result['message'] if not cache_use else cache[breed_name].image)
+        return BreedResponse(breed_name=breed_name, image=result['message'] if not cache_use else cache[breed_name].detail)
     
 
     def __set_breed_info(self, breed_name: str, user_id: str, details: str, request_url: str, cache_use: bool, request_status: int) -> None:

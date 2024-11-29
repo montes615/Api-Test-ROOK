@@ -3,19 +3,13 @@ from fastapi import Request, Response
 from datetime import datetime
 from app.logs import server_request_log
 from typing import Tuple
-from slowapi import Limiter
-from slowapi.util import get_remote_address
-
-limiter = Limiter(key_func=get_remote_address)
 
 
 class ServerRequestLog(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        limit = limiter.limit('10/minute')
         start_time = datetime.now()
+        
         method, url, client_host = await self.__set_init_log(start_time=start_time, request=request)
-
-        response = await limit(request)
 
         response = await call_next(request)
 
@@ -30,11 +24,11 @@ class ServerRequestLog(BaseHTTPMiddleware):
         client_host = request.client.host
 
         body_bytes = await request.body()
-        body = body_bytes.decode("utf-8") if body_bytes else "Empty"
+        body = body_bytes.decode('utf-8') if body_bytes else 'Empty'
         
         server_request_log.info(
-            f'{start_time.isoformat()} - {client_host} Start: {method} {url} '
-            f'{body}'
+            f'{client_host} Start: {method} {url} '
+            f'REQUEST: {body}'
         )
 
         return method, url, client_host
@@ -51,10 +45,16 @@ class ServerRequestLog(BaseHTTPMiddleware):
         end_time = datetime.now()
         process_time = (end_time - start_time).total_seconds()
 
-        server_request_log.info(
-            f'{end_time.isoformat()} - {client_host} End: {method} {url} - {response.status_code} - Time: {process_time:.2f}s - '
-            f'Response: {response_body.decode('utf-8') if response_body else 'Empty'}'
-        )
+        if response.status_code >= 400:
+            server_request_log.error(
+                f"{client_host} End: {method} {url} - {response.status_code} - Time: {process_time:.2f}s - "
+                f"Response: {response_body.decode('utf-8') if response_body else 'Empty'}"
+            )
+        else:
+            server_request_log.info(
+                f"{client_host} End: {method} {url} - {response.status_code} - Time: {process_time:.2f}s - "
+                f"RESPOSNSE: {response_body.decode('utf-8') if response_body else 'Empty'}"
+            )
 
         return new_response
 

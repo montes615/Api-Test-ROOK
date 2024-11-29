@@ -1,2 +1,11 @@
+# Virtual enviroment
 /venv
+
+# Enviroment variables
 .env
+
+# pycache
+__pycache__
+
+# Server log
+server_logs.log

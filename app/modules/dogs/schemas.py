@@ -9,7 +9,7 @@ class BreedResponse(BaseModel):
     
     
 class BreedCache(BaseModel):
-    image: str = Field(description='Image of the CEO')
+    detail: str = Field(description='Image of the CEO')
     expire: datetime = Field(description='Expire time')
     request_url: str = Field(description='Url request')
     status_code: int = Field(description='Status code of the request')
