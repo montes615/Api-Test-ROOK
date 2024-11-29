@@ -45,7 +45,7 @@ Follow these steps to set up the project locally (Ensure Python 3.11 or higher i
     pip install -r requirements.txt
 
 
-## Runing the proyect
+## Running the project
 
 1.  **Production Mode**:
     ```bash|shell|cmd
