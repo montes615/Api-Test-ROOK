@@ -8,9 +8,18 @@ from slowapi.middleware import SlowAPIMiddleware
 load_dotenv()
 
 
-limiter = Limiter(key_func=lambda request: request.client.host, default_limits=["20/minute"])
+limiter = Limiter(key_func=lambda request: request.client.host, default_limits=['20/minute'])
 
-app = FastAPI(root_path='/api/v1')
+app = FastAPI(
+    title='API-TEST-ROOK',
+    description='Welcome to **API-TEST-ROOK**, a project developed to demonstrate technical skills in integrating third-party APIs, working with databases, and creating unit tests',
+    version='0.0.1',
+    contact={
+        'name': 'Joseph Alberto Juárez Silva',
+        'email': 'josephsilvagg@gmail.com'
+    },
+    root_path='/api/v1',
+    )
 app.state.limiter = limiter
 
 

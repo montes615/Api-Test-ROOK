@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from .controller import AuthController
 from .schemas import RegisterUser, LoginUser, TokenResponse, TokenData
 
@@ -12,8 +12,27 @@ class AuthRouter(APIRouter):
         
         self.__controller = AuthController()
         
-        self.add_api_route('/login', self.login, methods=['POST'], response_model=TokenResponse)
-        self.add_api_route('/register', self.register, methods=['POST'], response_model=TokenResponse)
+        self.add_api_route(
+            '/login', 
+            self.login, methods=['POST'], 
+            response_model=TokenResponse,
+            status_code=200,
+            responses={
+                409: {'description': 'Invalid username or pasword', 'model': HTTPException}
+            },
+            description='Users with account can use this endpoint for get an api token'
+        )
+        self.add_api_route(
+            '/register', 
+            self.register, 
+            methods=['POST'], 
+            response_model=TokenResponse,
+            status_code=201,
+            responses={
+                409: {'description': 'The username alredy exists', 'model': HTTPException}
+            },
+            description='Users without account can use this endpoint for register and get an api token'
+        )
 
 
     async def register(self, registerUser: RegisterUser) -> TokenResponse:
