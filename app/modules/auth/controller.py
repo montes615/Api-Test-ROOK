@@ -48,6 +48,6 @@ class AuthController():
         '''Valid if the user exists and verify his password'''
         user = self.__model.get_user(username=loginUser.username)
         if not user or not self.verify_password(plain_password=loginUser.password, hashed_password=user.hashed_password):
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Wrong username or password', headers={'WWW-Authenticate': 'Bearer'})
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Wrong username or password', headers={'WWW-Authenticate': 'Bearer'})
         
         return user
