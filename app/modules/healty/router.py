@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
+from app.tools import HTTPExceptionModel
 from .controller import HealtyController
 from .schemas import HealtyResponse
 from app.tools import bearer_auth, HTTPAuthorizationCredentials, decode_access_token
@@ -21,9 +22,10 @@ class HealtyRouter(APIRouter):
             status_code=200,
             dependencies=[Depends(bearer_auth)],
             responses={
-                409: {'description': 'Auth error (token expired, invalid token)', 'model': HTTPException},
+                409: {'description': 'Auth error (token expired, invalid token)', 'model': HTTPExceptionModel},
             },
-            description='Valid the state of the thirt api service and the connection with the DB'
+            description='Valid the state of the thirt api service and the connection with the DB',
+            tags=['healty'],
         )
 
 

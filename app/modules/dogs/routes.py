@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from .controller import DogsController
-from app.tools import bearer_auth, decode_access_token, HTTPAuthorizationCredentials
+from app.tools import bearer_auth, decode_access_token, HTTPAuthorizationCredentials, HTTPExceptionModel
 from .schemas import BreedResponse, StatsResponse
 
 
@@ -21,11 +21,12 @@ class DogsRouter(APIRouter):
             status_code=200,
             dependencies=[Depends(bearer_auth)],
             responses={
-                409: {'description': 'Auth error (token expired, invalid token)', 'model': HTTPException},
-                404: {'description': 'The requested breed do not exists in the api service', 'model': HTTPException},
-                503: {'description': 'Third party service are unavailable', 'model': HTTPException}
+                409: {'description': 'Auth error (token expired, invalid token)', 'model': HTTPExceptionModel},
+                404: {'description': 'The requested breed do not exists in the api service', 'model': HTTPExceptionModel},
+                503: {'description': 'Third party service are unavailable', 'model': HTTPExceptionModel}
             },
-            description='Can you get an image for the requested breed'
+            description='Can you get an image for the requested breed',
+            tags=['breeds'],
         )
         self.add_api_route(
             '/stats', 
@@ -35,9 +36,10 @@ class DogsRouter(APIRouter):
             status_code=200,
             dependencies=[Depends(bearer_auth)],
             responses={
-                409: {'description': 'Auth error (token expired, invalid token)', 'model': HTTPException},
+                409: {'description': 'Auth error (token expired, invalid token)', 'model': HTTPExceptionModel},
             },
-            description='Gets the 10 most requested breeds'
+            description='Gets the 10 most requested breeds',
+            tags=['breeds'],
         )
         
         

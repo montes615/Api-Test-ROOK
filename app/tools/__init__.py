@@ -1,3 +1,4 @@
 from .exception_handlers import http_exception_handler, global_exception_handler
 from .middlewares import ServerRequestLog
 from .auth import decode_access_token, bearer_auth, HTTPAuthorizationCredentials
+from .exception_schemas import HTTPExceptionModel

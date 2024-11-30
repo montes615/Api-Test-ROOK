@@ -75,7 +75,7 @@ Follow these steps to set up the project locally (Ensure Python 3.11 or higher i
 
 ## Running Tests
 Run the following command in the project root to execute the unit tests: pytest
-Note: For the protected endpoints is necesary add a valid token
+Note: For protected endpoints, a valid token needs to be added
 
 
 ## Technologies Used

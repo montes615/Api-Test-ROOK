@@ -5,6 +5,8 @@
 .env
 
 # pycache
+**/__pycache__/
+*.pyc
 __pycache__
 
 # Server log
