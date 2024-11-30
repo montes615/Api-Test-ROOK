@@ -42,6 +42,13 @@ class DogsRouter(APIRouter):
         
         
     async def breed(self, breed_name: str, credentials: HTTPAuthorizationCredentials = Depends(bearer_auth)) -> BreedResponse:
+        '''
+        Get a image for the requested breed
+
+        ### Params
+            breed_name (str): Breed CEO name
+            credentials (HTTPAuthorizationCredentials): User authorization
+        '''
         token_info = decode_access_token(credentials=credentials)
         return self.__controller.get_ceo_breed(breed_name=breed_name, user_id=token_info['id'])
     

@@ -12,6 +12,12 @@ class DogsModel():
     
     
     def set_breed_stats(self, breed_name: str) -> None:
+        '''
+        Adds 1 to the number of requests by breed name
+
+        ### Params
+            breed_name (str): Breed CEO naem
+        '''
         with Session(engine) as session:
             statement = select(BreedStats).where(BreedStats.breed_name == breed_name)
             breed_stats = session.exec(statement).first()
@@ -27,6 +33,17 @@ class DogsModel():
                 
                 
     def set_breed_requets(self, breed_name: str, user_id: int, detail: str, request_url: str, cache: bool, request_status: int) -> None:
+        '''
+        Sets the breed ceo api request info
+
+        ### Params
+            breed_name (str): Breed CEO name
+            user_id (int): ID of the user making the request
+            detail (str): Message of the breed ceo api
+            request_url (str): Url requested
+            cache_use (bool): State of the used cache
+            request_status (int): Request http status code
+        '''
         with Session(engine) as session:
             breed_request = BreedRequests(breed_name=breed_name, user_id=user_id, detail=detail, request_url=request_url, cache=cache, request_status=request_status)
             session.add(breed_request)
@@ -34,6 +51,7 @@ class DogsModel():
             
             
     def get_breed_stats(self) -> List[BreedStatsResponse]:
+        '''Gets the 10 most requested breeds'''
         with Session(engine) as session:
             statement = select(BreedStats).order_by(desc(BreedStats.requests)).limit(10)
             breeds_stats = session.exec(statement).all()

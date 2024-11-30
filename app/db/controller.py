@@ -11,7 +11,8 @@ db_url = f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{D
 engine = create_engine(db_url, echo=True)
 
 
-def init_db():
-    from .schemas import User
+def init_db() -> None:
+    '''Load the meta data of the db schemas in sqlmodel'''
+    from .schemas import User, BreedStats, BreedRequests
     
     SQLModel.metadata.create_all(engine)

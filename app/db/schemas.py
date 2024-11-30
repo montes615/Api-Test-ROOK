@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 class User(SQLModel, table=True):
+    '''Users db schema'''
     __tablename__ = 'users'
     
     id: int = Field(default=None, primary_key=True)
@@ -16,6 +17,7 @@ class User(SQLModel, table=True):
     
     
 class BreedStats(SQLModel, table=True):
+    '''Breed stats db schema'''
     __tablename__ = 'breed_stats'
     
     id: int = Field(default=None, primary_key=True)
@@ -26,6 +28,7 @@ class BreedStats(SQLModel, table=True):
     
     
 class BreedRequests(SQLModel, table=True):
+    '''Breed request db schema'''
     __tablename__ = 'breed_requests'
     
     id: int = Field(default=None, primary_key=True)

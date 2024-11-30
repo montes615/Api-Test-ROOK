@@ -9,7 +9,16 @@ ALGORITHM = os.getenv('ALGORITHM')
 bearer_auth = HTTPBearer()
 
 def decode_access_token(credentials: HTTPAuthorizationCredentials) -> dict:
-    '''Decode and validate the token'''
+    '''
+    Decode and validate the token
+
+    ### Params
+        credentials (HTTPAuthorizationCredentials): User authorization
+
+    ### Raises
+        ExpiredSignatureError: Expired token
+        HTTPException: Invalid token
+    '''
     try:
         token = credentials.credentials
         return jwt.decode(token, SUPER_SECRET_KEY, algorithms=[ALGORITHM])

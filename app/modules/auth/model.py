@@ -11,7 +11,17 @@ class AuthModel():
     
     
     def add_user(self, username: str, hashed_password: str, usage: str) -> User:
-        '''Add the user on the DB'''
+        '''
+        Add the user on the DB
+
+        ### Params
+            username (str): Username
+            hashed_password (str): Hashed user password
+            usage (str): User permisons
+
+        ### Raises
+            HTTPException: Duplicated username
+        '''
         with Session(engine) as session:
             statement = select(User).where(User.username == username)
             register_user = session.exec(statement).first()
@@ -27,7 +37,12 @@ class AuthModel():
 
 
     def get_user(self, username: str) -> User:
-        '''Gets the user of the DB'''
+        '''
+        Gets the user of the DB
+
+        ### Params
+            username (str): Username
+        '''
         with Session(engine) as session:
             statement = select(User).where(User.username == username)
             return session.exec(statement).first()

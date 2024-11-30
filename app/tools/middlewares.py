@@ -7,6 +7,13 @@ from typing import Tuple
 
 class ServerRequestLog(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        '''
+        Middleware for implement log messages in all endpoins
+
+        ### Params
+            request (Request): Request object
+            call_next (RequestResponseEndpoint): Calls the next step of the request
+        '''
         start_time = datetime.now()
         
         method, url, client_host = await self.__set_init_log(start_time=start_time, request=request)
@@ -19,6 +26,13 @@ class ServerRequestLog(BaseHTTPMiddleware):
     
 
     async def __set_init_log(self, start_time: datetime, request: Request) -> Tuple[str, str, int]:
+        '''
+        Set the init request log
+
+        ### Params
+            start_time (datetime): Init time of the request
+            request (Request): Request object
+        '''
         method = request.method
         url = str(request.url)
         client_host = request.client.host
@@ -35,6 +49,16 @@ class ServerRequestLog(BaseHTTPMiddleware):
     
 
     async def __set_end_log(self, start_time: datetime, method: str, url: str, client_host: str, response: Response) -> Response:
+        '''
+        Set the request end log
+
+        ### Params
+            start_time (datetime): Init time of the request
+            method (str): Request method
+            url (str): Request url
+            client_host (str): Request client host
+            response (Response): Response object
+        '''
         response_body = b''.join([chunk async for chunk in response.body_iterator])
         new_response = Response(
             content=response_body,

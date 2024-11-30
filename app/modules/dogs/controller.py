@@ -15,6 +15,16 @@ class DogsController():
         
         
     def get_ceo_breed(self, breed_name: str, user_id: int) -> BreedResponse:
+        '''
+        Get the breeds images from the thirt party api and storage it in cache
+
+        ### Params
+            breed_name (str): Breed Ceo name
+            user_id (int): ID of the user making the request
+
+        ### Raises
+            HTTPException: If the thirt party api service are inavailable or the requested breed do not register in the api
+        '''
         cache_use: bool = False
         request_status: int = None
 
@@ -50,7 +60,18 @@ class DogsController():
         return BreedResponse(breed_name=breed_name, image=result['message'] if not cache_use else cache[breed_name].detail)
     
 
-    def __set_breed_info(self, breed_name: str, user_id: str, details: str, request_url: str, cache_use: bool, request_status: int) -> None:
+    def __set_breed_info(self, breed_name: str, user_id: int, details: str, request_url: str, cache_use: bool, request_status: int) -> None:
+        '''
+        Sets the requested info in the DB on BreedStats and BreedRequests schemes
+
+        ### Params
+            breed_name (str): Breed Ceo name
+            user_id (int): ID of the user making the request
+            details (str): Message of the breed ceo api
+            request_url (str): Url requested
+            cache_use (bool): State of the used cache
+            request_status (int): Request http status code
+        '''
         self.__model.set_breed_stats(breed_name=breed_name)
         self.__model.set_breed_requets(
             breed_name=breed_name,
@@ -63,5 +84,6 @@ class DogsController():
     
     
     def get_stats(self) -> StatsResponse:
+        '''Gets the most requested breeds'''
         breeds_stats_response = self.__model.get_breed_stats()
         return StatsResponse(top_breeds=breeds_stats_response)
