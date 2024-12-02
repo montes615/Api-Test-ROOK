@@ -9,6 +9,7 @@ Welcome to **API-TEST-ROOK**, a project developed to demonstrate technical skill
 ## Table of Contents
 - [Overview](#overview)
 - [Installation](#installation)
+- [Configuration](#configuration)
 - [Running the Project](#running-the-project)
 - [Usage](#usage)
 - [Running Tests](#running-tests)
@@ -43,6 +44,17 @@ Follow these steps to set up the project locally (Ensure Python 3.11 or higher i
     
     Windows:
     pip install -r requirements.txt
+
+
+## Configuration
+Thats necesary config the next enviroment variables in a .env file:
+DB_USER             User DB
+DB_PASSWORD         User DB password
+DB_HOST             DB host
+DB_PORT             DB port
+DB_NAME             DB name
+SUPER_SECRET_KEY    Token key
+ALGORITHM           Algorithm to encode the token
 
 
 ## Running the project
